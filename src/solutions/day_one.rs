@@ -12,7 +12,10 @@ fn main() {
         .collect();
 
     let increases = report_depth_increases(&depths);
-    println!("{} increases", increases);
+    println!("{} depth increases", increases);
+
+    let window_increases = report_window_depth_increases(&depths);
+    println!("{} window depth increases", window_increases);
 }
 
 fn report_depth_increases(depths: &Vec<u32>) -> u32 {
@@ -23,15 +26,31 @@ fn report_depth_increases(depths: &Vec<u32>) -> u32 {
         .count() as u32
 }
 
+fn report_window_depth_increases(depths: &Vec<u32>) -> u32 {
+    let window_depths = depths
+        .iter()
+        .zip(depths.iter().skip(1).zip(depths.iter().skip(2)))
+        .map(|(a, (b, c))| a + b + c)
+        .collect();
+    report_depth_increases(&window_depths)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn test_provided_example() {
+    fn test_provided_example_part_one() {
         let input = vec![199, 200, 208, 210, 200, 207, 240, 269, 260, 263];
         let output = report_depth_increases(&input);
 
         assert_eq!(output, 7);
+    }
+
+    #[test]
+    fn test_provided_example_part_two() {
+        let input = vec![199, 200, 208, 210, 200, 207, 240, 269, 260, 263];
+        let output = report_window_depth_increases(&input);
+        assert_eq!(output, 5);
     }
 }
